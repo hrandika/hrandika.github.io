@@ -1,0 +1,150 @@
+{
+  "configVersion": 1,
+  "timestamp": 1599550262202,
+  "index": "/index.html",
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [
+        "/10-es2015.e6bbcd44061d75c83db0.js",
+        "/10-es5.e6bbcd44061d75c83db0.js",
+        "/11-es2015.e2af759c026c6688c745.js",
+        "/11-es5.e2af759c026c6688c745.js",
+        "/8-es2015.4746846f154c71bd89ab.js",
+        "/8-es5.4746846f154c71bd89ab.js",
+        "/9-es2015.5510e08f03a6965f882a.js",
+        "/9-es5.5510e08f03a6965f882a.js",
+        "/common-es2015.5f8edd2fcfc7be4d2a49.js",
+        "/common-es5.5f8edd2fcfc7be4d2a49.js",
+        "/favicon.ico",
+        "/index.html",
+        "/main-es2015.c6eeabf8c7debbd50e7e.js",
+        "/main-es5.c6eeabf8c7debbd50e7e.js",
+        "/manifest.webmanifest",
+        "/okaidia.css",
+        "/polyfills-es2015.8b8bcabb393a9756515a.js",
+        "/polyfills-es5.70aea8e89d108787dedd.js",
+        "/runtime-es2015.0f48cf6ec77c94504827.js",
+        "/runtime-es5.0f48cf6ec77c94504827.js",
+        "/scripts.9d001a07d216b0c7e234.js",
+        "/styles.25b523a4b3ccbe170cac.css",
+        "/vs.css"
+      ],
+      "patterns": []
+    },
+    {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "cacheQueryOptions": {
+        "ignoreVary": true
+      },
+      "urls": [
+        "/assets/icons/icon-128x128.png",
+        "/assets/icons/icon-144x144.png",
+        "/assets/icons/icon-152x152.png",
+        "/assets/icons/icon-192x192.png",
+        "/assets/icons/icon-384x384.png",
+        "/assets/icons/icon-512x512.png",
+        "/assets/icons/icon-72x72.png",
+        "/assets/icons/icon-96x96.png",
+        "/assets/img/aaron-thomas-4CHdH9cMr0E-unsplash.jpg",
+        "/assets/img/alessandro-pacilio-x-8qGCHJMGQ-unsplash.jpg",
+        "/assets/img/bradford-nicolas-gWfmINd9-yY-unsplash.jpg",
+        "/assets/img/daniel-olah-f0P7y3swnZU-unsplash.jpg",
+        "/assets/img/daniil-silantev-LUX9qU74CAQ-unsplash.jpg",
+        "/assets/img/hari-nandakumar-xG8Js-uvgg4-unsplash.jpg",
+        "/assets/img/kiril-dobrev-v63UL8s28Ew-unsplash.jpg",
+        "/assets/img/krzysztof-hepner-C1JTOq_uTpY-unsplash.jpg",
+        "/assets/img/logo.png",
+        "/assets/img/max-ostrozhinskiy-18wn7B2y-SU-unsplash.jpg",
+        "/assets/img/nathan-gonthier-BboZKgHg0Yw-unsplash.jpg",
+        "/assets/img/robert-tudor-UZCKUqHzaps-unsplash.jpg",
+        "/assets/img/xps-7ZWVnVSaafY-unsplash.jpg",
+        "/assets/posts/android/security.md",
+        "/assets/posts/android/test-driven-development.md",
+        "/assets/posts/angular/ngxs.md",
+        "/assets/posts/parallel-computing/introduction-to-parallel-computing.md",
+        "/assets/posts/spring-boot/spring-data-jdbc.md",
+        "/assets/svg/app.svg"
+      ],
+      "patterns": []
+    }
+  ],
+  "dataGroups": [],
+  "hashTable": {
+    "/10-es2015.e6bbcd44061d75c83db0.js": "626f317024213f8e1920bad59c2d3e23d625e293",
+    "/10-es5.e6bbcd44061d75c83db0.js": "d82186177ee739316755eb98baf0e83719b58e9c",
+    "/11-es2015.e2af759c026c6688c745.js": "61a5fb1471f97995b15df08832a8846136e95282",
+    "/11-es5.e2af759c026c6688c745.js": "e7973b9d141037387db1af34ddbb43a0bc427bd3",
+    "/8-es2015.4746846f154c71bd89ab.js": "0c23cd79ee81f7a5f4d4dbe60fc9ac498d6baa7c",
+    "/8-es5.4746846f154c71bd89ab.js": "90fe50437180f34f07203b33cb8b02c0954070a3",
+    "/9-es2015.5510e08f03a6965f882a.js": "8968cd43957eb31d01c1a26dc99c9c788dd9ccdf",
+    "/9-es5.5510e08f03a6965f882a.js": "a7fbfb5601fd98e1c490a42f0b361a998c6acd88",
+    "/assets/icons/icon-128x128.png": "dae3b6ed49bdaf4327b92531d4b5b4a5d30c7532",
+    "/assets/icons/icon-144x144.png": "b0bd89982e08f9bd2b642928f5391915b74799a7",
+    "/assets/icons/icon-152x152.png": "7479a9477815dfd9668d60f8b3b2fba709b91310",
+    "/assets/icons/icon-192x192.png": "1abd80d431a237a853ce38147d8c63752f10933b",
+    "/assets/icons/icon-384x384.png": "329749cd6393768d3131ed6304c136b1ca05f2fd",
+    "/assets/icons/icon-512x512.png": "559d9c4318b45a1f2b10596bbb4c960fe521dbcc",
+    "/assets/icons/icon-72x72.png": "c457e56089a36952cd67156f9996bc4ce54a5ed9",
+    "/assets/icons/icon-96x96.png": "3914125a4b445bf111c5627875fc190f560daa41",
+    "/assets/img/aaron-thomas-4CHdH9cMr0E-unsplash.jpg": "b8aab15c6c235f00ca1deee0d283306cb4be31c3",
+    "/assets/img/alessandro-pacilio-x-8qGCHJMGQ-unsplash.jpg": "dad72821de9331f8acff4549ede388407ae429b9",
+    "/assets/img/bradford-nicolas-gWfmINd9-yY-unsplash.jpg": "fb4f9c4c4456cd376328912057011d01d0a61054",
+    "/assets/img/daniel-olah-f0P7y3swnZU-unsplash.jpg": "2ee70f9b7dc41e29f978a1373efe5c2b37c7368a",
+    "/assets/img/daniil-silantev-LUX9qU74CAQ-unsplash.jpg": "42c341b7cb9f16f07d494702da698da060c66f72",
+    "/assets/img/hari-nandakumar-xG8Js-uvgg4-unsplash.jpg": "80a41b95c78fd8a61a78b9909e2e60c0c485667c",
+    "/assets/img/kiril-dobrev-v63UL8s28Ew-unsplash.jpg": "1811d62318fb6a413fe12ca92cc0dc0cc5c680c2",
+    "/assets/img/krzysztof-hepner-C1JTOq_uTpY-unsplash.jpg": "5d00fc425fef03908db311ffc2b6b05a55ed41cc",
+    "/assets/img/logo.png": "e115e5b1271248b38d0cea79b41ebcebec3702e7",
+    "/assets/img/max-ostrozhinskiy-18wn7B2y-SU-unsplash.jpg": "dce51988879edff79425be18d0011d56c37a70e8",
+    "/assets/img/nathan-gonthier-BboZKgHg0Yw-unsplash.jpg": "583f7a47092b5b9fe33c0071709de6a6d4c656c1",
+    "/assets/img/robert-tudor-UZCKUqHzaps-unsplash.jpg": "6049c7c3167c19d256a55f7f60d6dad8e7a7bbee",
+    "/assets/img/xps-7ZWVnVSaafY-unsplash.jpg": "675a1e39c473d7ce1048d651f49626a110728141",
+    "/assets/posts/android/security.md": "45dd1f5cc1061a027b2dd174a8886cdbc357e9aa",
+    "/assets/posts/android/test-driven-development.md": "40f39b2b89d0bd69bdb305325745680177e7478f",
+    "/assets/posts/angular/ngxs.md": "6308801a0de3b89a04c052d02f2ebfd77ac15ef1",
+    "/assets/posts/parallel-computing/introduction-to-parallel-computing.md": "da39a3ee5e6b4b0d3255bfef95601890afd80709",
+    "/assets/posts/spring-boot/spring-data-jdbc.md": "3fdb2b29ba3d750a15a4f61e5bba5ae3c01239c5",
+    "/assets/svg/app.svg": "bcba330fe5eebabffef4a1fe71cde4b3b9f92e86",
+    "/common-es2015.5f8edd2fcfc7be4d2a49.js": "ab49cde0cf13d3adcfca2d74edf56cf0c6451fe7",
+    "/common-es5.5f8edd2fcfc7be4d2a49.js": "8cd09e33f21eb679025ecd50763c5d39ffb28a7f",
+    "/favicon.ico": "22f6a4a3bcaafafb0254e0f2fa4ceb89e505e8b2",
+    "/index.html": "133e0309a53a845b9990e33fd45d232c50409379",
+    "/main-es2015.c6eeabf8c7debbd50e7e.js": "f938f663d0a10acc65a1266df67cdb64d48962a9",
+    "/main-es5.c6eeabf8c7debbd50e7e.js": "3800db3354fd283b86060dca29ab25ea0b46617a",
+    "/manifest.webmanifest": "9d0b26196df567545ecfcd73af74534be161e927",
+    "/okaidia.css": "2bce967800d955a808289e279467c606ab555d56",
+    "/polyfills-es2015.8b8bcabb393a9756515a.js": "c6df5256b53226df1d997d0b146fad0da7c48be3",
+    "/polyfills-es5.70aea8e89d108787dedd.js": "f61052194b20ce62943adfd37b27ace3b6552369",
+    "/runtime-es2015.0f48cf6ec77c94504827.js": "917a356c256b18692986b16ce4bd6c70a29f7132",
+    "/runtime-es5.0f48cf6ec77c94504827.js": "538bb889fe9cf3e78a86850cc8dd4d4656f92fd2",
+    "/scripts.9d001a07d216b0c7e234.js": "f16ba51992b250466e89131b4d84298dae76be33",
+    "/styles.25b523a4b3ccbe170cac.css": "e77cd69ed984dddbadffc89650ab411766f64f8b",
+    "/vs.css": "93eaa470dc24f4b3880042b6b1b68bd732fd841b"
+  },
+  "navigationUrls": [
+    {
+      "positive": true,
+      "regex": "^\\/.*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*\\.[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*$"
+    },
+    {
+      "positive": false,
+      "regex": "^\\/(?:.+\\/)?[^/]*__[^/]*\\/.*$"
+    }
+  ]
+}
