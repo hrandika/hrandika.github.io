@@ -282,7 +282,8 @@ Don't get fooled when you hear that a GPU has 5000 cores, it's probably just say
   Keeping data local to the process that works on it conserves memory accesses, cache refreshes and bus traffic that occurs when multiple processes use the same data.
   Unfortunately, controlling data locality is hard to understand and may be beyond the control of the average user.
 
-<center><img style="width:100%;display: block; margin: auto;" src="https://hrandika.github.io/assets/img/posts/introduction-to-parallel-computing/sharedMemoryModel.gif">
+<center>
+<img style="width:100%;display: block; margin: auto;" src="https://hrandika.github.io/assets/img/posts/introduction-to-parallel-computing/sharedMemoryModel.gif">
 </center>
 
 ## Threads Model
@@ -290,11 +291,141 @@ Don't get fooled when you hear that a GPU has 5000 cores, it's probably just say
 - This programming model is a type of shared memory programming.
 - In the threads model of parallel programming, a single "heavy weight" process can have multiple "light weight", concurrent execution paths.
 
-Let take a look at Java example
+Let take a look at Java example.
 
 ```bash
 mvn archetype:generate -DgroupId=com.hrandika.java -DartifactId=parallel-computing -DarchetypeArtifactId=maven-archetype-quickstart -DinteractiveMode=false
 ```
+
+```java
+package com.hrandika.java;
+
+public class App {
+    public static void main(String[] args) {
+
+        for (int i = 0; i < 10; i++) {
+            new Thread(new Runnable() {
+                public void run() {
+                    System.out.println("Current Thread id: " + Thread.currentThread().getId());
+                }
+            }).start();
+        }
+
+    }
+}
+```
+
+## Distributed Memory / Message Passing Model
+
+<center>
+<img style="width:100%;display: block; margin: auto;" src="https://hrandika.github.io/assets/img/posts/introduction-to-parallel-computing/msg_pass_model.gif">
+</center>
+
+- This model demonstrates the following characteristic
+  - A set of tasks that use their own local memory during computation. Multiple tasks can reside on the same physical machine and/or across an arbitrary number of machines.
+  - Tasks exchange data through communications by sending and receiving messages.
+  - Data transfer usually requires cooperative operations to be performed by each process. For example, a send operation must have a matching receive operation.
+
+### Implementations
+
+- From a programming perspective, message passing implementations usually comprise a library of subroutines. Calls to these subroutines are imbedded in source code. The programmer is responsible for determining all parallelism.
+- In 1992, the Message Passing Interface (MPI) Forum was formed with the primary goal of establishing a standard interface for message passing implementations.
+- MPI is the "de facto" industry standard for message passing, replacing virtually all other message passing implementations used for production work. MPI implementations exist for virtually all popular parallel computing platforms. Not all implementations include everything in MPI-1, MPI-2 or MPI-3.
+
+## Data Parallel Model
+
+<center>
+<img style="width:100%;display: block; margin: auto;" src="https://hrandika.github.io/assets/img/posts/introduction-to-parallel-computing/data_parallel_model.gif">
+</center>
+
+- May also be referred to as the Partitioned Global Address Space (PGAS) model.
+- The data parallel model demonstrates the following characteristics
+
+  - Address space is treated globally
+  - Most of the parallel work focuses on performing operations on a data set. The data set is typically organized into a common structure, such as an array or cube.
+  - A set of tasks work collectively on the same data structure, however, each task works on a different partition of the same data structure.
+  - Tasks perform the same operation on their partition of work, for example, "add 4 to every array element".
+
+- On shared memory architectures, all tasks may have access to the data structure through global memory.
+- On distributed memory architectures, the global data structure can be split up logically and/or physically across tasks.
+
+## Hybrid Model
+
+- A hybrid model combines more than one of the previously described programming models.
+- Currently, a common example of a hybrid model is the combination of the message passing model (MPI) with the threads model (OpenMP).
+  - Threads perform computationally intensive kernels using local, on-node data
+  - Communications between processes on different nodes occurs over the network using MPI
+- This hybrid model lends itself well to the most popular hardware environment of clustered multi/many-core machines.
+- Another similar and increasingly popular example of a hybrid model is using MPI with CPU-GPU (Graphics Processing Unit) programming.
+  - MPI tasks run on CPUs using local memory and communicating with each other over a network.
+  - Computationally intensive kernels are off-loaded to GPUs on-node.
+  - Data exchange between node-local memory and GPUs uses CUDA (or something equivalent).
+- Other hybrid models are common:
+  - MPI with Pthreads
+  - MPI with non-GPU accelerators
+
+<center>
+<img style="width:100%;display: block; margin: auto;" 
+     src="https://hrandika.github.io/assets/img/posts/introduction-to-parallel-computing/hybrid_model.gif">
+</center>
+
+## SPMD and MPMD
+
+### Single Program Multiple Data (SPMD):
+
+- SPMD is actually a "high level" programming model that can be built upon any combination of the previously mentioned parallel programming models.
+- SINGLE PROGRAM: All tasks execute their copy of the same program simultaneously. This program can be threads, message passing, data parallel or hybrid.
+- MULTIPLE DATA: All tasks may use different data
+- SPMD programs usually have the necessary logic programmed into them to allow different tasks to branch or conditionally execute only those parts of the program they are designed to execute. That is, tasks do not necessarily have to execute the entire program - perhaps only a portion of it.
+- The SPMD model, using message passing or hybrid programming, is probably the most commonly used parallel programming model for multi-node clusters.
+
+<center>
+<img style="width:100%;display: block; margin: auto;" 
+     src="https://hrandika.github.io/assets/img/posts/introduction-to-parallel-computing/spmd_model.gif">
+</center>
+
+### Multiple Program Multiple Data (MPMD):
+
+- Like SPMD, MPMD is actually a "high level" programming model that can be built upon any combination of the previously mentioned parallel programming models.
+- MULTIPLE PROGRAM: Tasks may execute different programs simultaneously. The programs can be threads, message passing, data parallel or hybrid.
+- MULTIPLE DATA: All tasks may use different data
+- MPMD applications are not as common as SPMD applications, but may be better suited for certain types of problems, particularly those that lend themselves better to functional decomposition than domain decomposition.
+
+<center>
+  <img  style="width:100%;display: block; margin: auto;" 
+        src="https://hrandika.github.io/assets/img/posts/introduction-to-parallel-computing/mpmd_model.gif">
+</center>
+
+# GPU Programming
+
+## Evolution of CUDA for GPU Programming
+
+GPUs were historically used for enhanced gaming graphics, 3D displays, and design software. GPU-accelerated computing refers to the paradigm of enhanced programming using the GPU and CPU processing powers together for computationally expensive mathematical operations like matrix operations, ray casting, and 3D rendering.
+
+Compute unified device architecture (CUDA) is an Nvidia-developed platform for parallel computing on CUDA-enabled GPUs. It opens the paradigm of general-purpose computing on graphical processing units (GPGPU). The CUDA platform provides an interface between common programming languages like C/C++ and Fortran with additional wrappers for Python
+
+## CUDA Programming Architecture
+
+CPU architecture is meant for sequential execution of complex control instructions or data management. GPU architecture is meant for parallel execution of simple control logic. GPUs are not standalone systems and a CPU (host) together with a GPU (device) forms a heterogeneous computation platform. The independent GPU and CPU memory communicate via a PCI-express bus.
+
+A CUDA-compliant code has two components: computationally light CPU (host) code and computationally expensive GPU (device) code that performs parallel execution. A CUDA program has separately defined CPU and GPU code. The GPU code consists only of the functions that are going to be parallelly executed on it. OpenCL is the open-source version of CUDA and runs on CPUs and GPUs from almost all vendors.
+
+<center>
+  <img  style="width:100%;display: block; margin: auto;" 
+        src="https://hrandika.github.io/assets/img/posts/introduction-to-parallel-computing/NZRVETsafXwO6eq5Yg4yQMGteH40HPjWStMWzS9L.png">
+</center>
+
+During the execution of the CUDA code, memory exchange happens between the host and the device. The device executes the code and then returns the result to the host. While a normal C/C++ code has a .c or .cpp suffix, a CUDA code has a .cu extension and uses the nvcc compiler.
+
+A grid is a collection of all threads of the parallel cores running at the moment spawned by a single compute kernel. Each grid has several blocks, each containing several individual threads. The grid can have multi-dimensional (1D, 2D and 3D) blocks and each block can have a multi-dimensional (1D, 2D, and 3D) thread arrangement. A CUDA thread is very analogous to pthread in terms of abstraction for control of logical threads.
+
+<center>
+  <img  style="width:100%;display: block; margin: auto;" 
+        src="https://hrandika.github.io/assets/img/posts/introduction-to-parallel-computing/ncOtXUifQ0Q80owjBvKDzqWV9wprgSg6gB3e1tjO.png">
+</center>
+
+
+---
 
 #### References
 
