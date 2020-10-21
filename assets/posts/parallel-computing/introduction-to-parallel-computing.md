@@ -424,8 +424,104 @@ A grid is a collection of all threads of the parallel cores running at the momen
         src="https://hrandika.github.io/assets/img/posts/introduction-to-parallel-computing/ncOtXUifQ0Q80owjBvKDzqWV9wprgSg6gB3e1tjO.png">
 </center>
 
+## CUDA Terminology
 
----
+- Host : the CPU and its memory
+- Device: the GPU and its memory
+- SM (Streaming Multiprocessor): Independent Processing Unit. Each device contains several SM’s
+- Compute Capability (CC): Define the SM version.  
+ Determine the hardware features and the available instructions. Comprises of: - a major revision: The core architecture - a minor revision: Specify an incremental improvement over the core architecture
+<center>
+  <img  style="width:100%;display: block; margin: auto;" 
+        src="https://hrandika.github.io/assets/img/posts/introduction-to-parallel-computing/cuda_cc.png">
+</center>
+
+- Kernel : function (void only) that launched, usually by the host and
+  executed asynchronously (non blocking the host) on the device
+
+  - Specified by **\_\_global\_\_**
+
+```c
+template<typename T>
+__global__ void Add_kernel(int numElements, T* dst, const T* src)
+{
+  const int idx = blockDim.x * blockIdx.x + threadIdx.x;
+  if (idx < numElements)
+  dst[idx] += src[idx];
+}
+```
+
+- Launch from the host by: Add_kernel<<< gridSize, blockSize, SharedMemSize=0, Stream=0>>> (inside <<< >>> is the execution configuration)
+- The kernel code run on all the kernel threads concurrently.Each thread has built-in variables as:
+
+  - **blockDim** : (uint3) variable contains the size/dimension of the block
+  - **blockIdx** : (uint3) variable contains the index of the current block instance within the grid
+  - **threadIdx**: (uint3) variable contains the index of the current thread instance within the block
+
+- Device Function: function that run on the device
+  - Specified by \_\_device\_\_
+  - Can be called from a kernel or other Device function
+  - Cannot be called from the host
+  - can return value
+
+```c
+template<typename T>
+__device__ T MinMax(T a, T b, bool min_or_max)
+{
+  if (min_or_max)
+  return (a < b) ? a : b ;
+  else
+  return (a > b) ? a : b ;
+}
+```
+
+- Thread
+
+  - CUDA thread are extremely lightweight compared to CPU threads
+  - No context switch (resources stay allocated to each thread until it completes its execution)
+
+- Warp:
+
+  - A group of (32) consecutive threads which execute Single Instruction on Multiple-Data (SIMD)
+    concurrently on a single SM. It is called also SIMT (Single Instruction Multiple thread).
+  - Each warp has its own instruction address counter and register state, so can branch and execute
+    independently
+
+- Block
+
+  - Group of (1/2/3 dimensional) threads, divided to Warps. Threads ID’s 0:31 assigned to the 1st Warp.Threads ID’s 32:63 assigned to the 2nd Warp and so on. Executed by a single SM.
+
+- Grid: Group of (1/2/3 dimensional) thread blocks. Can be executed by all the device SM’s.
+
+So:  
+**Kernel** is executed by a Grid.  
+**Grid** is executed by Blocks.  
+**Blocks** are executed by Warps.  
+**Warps** are executed by Threads
+
+## Closer look at Program flow
+
+- Host Code
+
+  - Do sequential stuff
+  - Prepare Kernel for launch
+
+- Allocate memory on device
+- Copy data. Host to Device
+- Lauch Kernel
+- Copy Data Device to host
+
+<!-- ## CUDA Asynchronous commands
+
+The following CUDA commands are non-blocking the host:
+
+- Kernel launch
+- Memory copy from/to the same device
+- Memory copy/set with Async suffix (as cudaMemcpyAsync,
+  cudaMemsetAsync, cudaMemcpyFromSymbolAsync, …) if
+  the host memory is pinned (page locked)
+
+--- -->
 
 #### References
 
