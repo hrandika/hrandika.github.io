@@ -511,6 +511,105 @@ So:
 - Lauch Kernel
 - Copy Data Device to host
 
+## Thread Id in a grid
+
+<center>
+  <img  style="width:100%;display: block; margin: auto;" 
+        src="https://hrandika.github.io/assets/img/posts/introduction-to-parallel-computing/threadid.png">
+</center>
+
+<center>
+  <img  style="width:100%;display: block; margin: auto;" 
+        src="https://hrandika.github.io/assets/img/posts/introduction-to-parallel-computing/threadid2.png">
+</center>
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+
+__global__ void print_from_gpu(void) {
+    printf("Hello World! from thread [%d,%d] From device\n", threadIdx.x,blockIdx.x);
+}
+
+int main(void) {
+  printf("Hello World from host!\n");
+
+  print_from_gpu<<<1, 1>>>();
+  cudaDeviceSynchronize();
+  return 0;
+}
+```
+
+## GPU architecture
+
+<center>
+  <img  style="width:100%;display: block; margin: auto;" 
+        src="https://hrandika.github.io/assets/img/posts/introduction-to-parallel-computing/arch.png">
+</center>
+
+<center>
+  <img  style="width:100%;display: block; margin: auto;" 
+        src="https://hrandika.github.io/assets/img/posts/introduction-to-parallel-computing/soft_hard.png">
+</center>
+
+### CUDA Threads:
+
+CUDA threads execute on a CUDA core. CUDA threads are different from CPU threads. CUDA threads are extremely lightweight and provide fast context switching. The reason for fast context switching is due to the availability of a large register size in a GPU and hardware-based scheduler. The thread context is present in registers compared to CPU, where the thread handle resides in a lower memory hierarchy such as a cache. Hence, when one thread is idle/waiting, another thread that is ready can start executing with almost no delay. Each CUDA thread must execute the same kernel and work independently on different data (SIMT).
+
+### CUDA blocks:
+
+CUDA threads are grouped together into a logical entity called a CUDA block. CUDA blocks execute on a single Streaming Multiprocessor (SM). One block runs on a single SM, that is, all of the threads within one block can only execute on cores in one SM and do not execute on the cores of other SMs. Each GPU may have one or more SM and hence to effectively make use of the whole GPU; the user needs to divide the parallel computation into blocks and threads.
+
+### GRID/kernel:
+
+CUDA blocks are grouped together into a logical entity called a CUDA GRID. A CUDA GRID is then executed on the device.
+
+## Vector addition using CUDA
+
+Without GPU
+
+```c
+#include<stdio.h>
+#include<stdlib.h>
+
+#define N 512
+
+void host_add(int *a, int *b, int *c) {
+    for(int idx=0;idx<N;idx++)
+        c[idx] = a[idx] + b[idx];
+}
+
+//basically just fills the array with index.
+void fill_array(int *data) {
+    for(int idx=0;idx<N;idx++)
+        data[idx] = idx;
+}
+
+void print_output(int *a, int *b, int*c) {
+    for(int idx=0;idx<N;idx++)
+        printf("\n %d + %d = %d", a[idx] , b[idx], c[idx]);
+}
+
+int main(void) {
+    int *a, *b, *c;
+    int size = N * sizeof(int);
+   // Alloc space for host copies of a, b, c and setup input values
+    a = (int *)malloc(size); fill_array(a);
+    b = (int *)malloc(size); fill_array(b);
+    c = (int *)malloc(size);
+    host_add(a,b,c);
+    print_output(a,b,c);
+    free(a); free(b); free(c);
+    return 0;
+}
+```
+## Cuda Memory model
+
+<center>
+  <img  style="width:100%;display: block; margin: auto;" 
+        src="https://hrandika.github.io/assets/img/posts/introduction-to-parallel-computing/mem.png">
+</center>
+
 <!-- ## CUDA Asynchronous commands
 
 The following CUDA commands are non-blocking the host:
@@ -526,3 +625,4 @@ The following CUDA commands are non-blocking the host:
 #### References
 
 [Introduction to parallel computing](https://computing.llnl.gov/tutorials/parallel_comp)
+[Lean Cuda programing](https://subscription.packtpub.com/book/programming/9781788996242/1/ch01lvl1sec04/vector-addition-using-cuda)
