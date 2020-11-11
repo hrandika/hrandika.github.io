@@ -513,15 +513,9 @@ So:
 
 ## Thread Id in a grid
 
-<center>
-  <img  style="width:100%;display: block; margin: auto;" 
-        src="https://hrandika.github.io/assets/img/posts/introduction-to-parallel-computing/threadid.png">
-</center>
+<img width="100%" src="https://hrandika.github.io/assets/img/posts/introduction-to-parallel-computing/threadid.png">
 
-<center>
-  <img  style="width:100%;display: block; margin: auto;" 
-        src="https://hrandika.github.io/assets/img/posts/introduction-to-parallel-computing/threadid2.png">
-</center>
+<img  width="100%" src="https://hrandika.github.io/assets/img/posts/introduction-to-parallel-computing/threadid2.png">
 
 ```c
 #include <stdio.h>
@@ -542,15 +536,9 @@ int main(void) {
 
 ## GPU architecture
 
-<center>
-  <img  style="width:100%;display: block; margin: auto;" 
-        src="https://hrandika.github.io/assets/img/posts/introduction-to-parallel-computing/arch.png">
-</center>
+<img  width="100%" src="https://hrandika.github.io/assets/img/posts/introduction-to-parallel-computing/arch.png">
 
-<center>
-  <img  style="width:100%;display: block; margin: auto;" 
-        src="https://hrandika.github.io/assets/img/posts/introduction-to-parallel-computing/soft_hard.png">
-</center>
+<img width="100%" src="https://hrandika.github.io/assets/img/posts/introduction-to-parallel-computing/soft_hard.png">
 
 ### CUDA Threads:
 
@@ -564,63 +552,148 @@ CUDA threads are grouped together into a logical entity called a CUDA block. CUD
 
 CUDA blocks are grouped together into a logical entity called a CUDA GRID. A CUDA GRID is then executed on the device.
 
-## Vector addition using CUDA
-
-Without GPU
-
-```c
-#include<stdio.h>
-#include<stdlib.h>
-
-#define N 512
-
-void host_add(int *a, int *b, int *c) {
-    for(int idx=0;idx<N;idx++)
-        c[idx] = a[idx] + b[idx];
-}
-
-//basically just fills the array with index.
-void fill_array(int *data) {
-    for(int idx=0;idx<N;idx++)
-        data[idx] = idx;
-}
-
-void print_output(int *a, int *b, int*c) {
-    for(int idx=0;idx<N;idx++)
-        printf("\n %d + %d = %d", a[idx] , b[idx], c[idx]);
-}
-
-int main(void) {
-    int *a, *b, *c;
-    int size = N * sizeof(int);
-   // Alloc space for host copies of a, b, c and setup input values
-    a = (int *)malloc(size); fill_array(a);
-    b = (int *)malloc(size); fill_array(b);
-    c = (int *)malloc(size);
-    host_add(a,b,c);
-    print_output(a,b,c);
-    free(a); free(b); free(c);
-    return 0;
-}
-```
 ## Cuda Memory model
 
-<center>
-  <img  style="width:100%;display: block; margin: auto;" 
-        src="https://hrandika.github.io/assets/img/posts/introduction-to-parallel-computing/mem.png">
-</center>
+<img width="100%" src="https://hrandika.github.io/assets/img/posts/introduction-to-parallel-computing/mem.png">
 
-<!-- ## CUDA Asynchronous commands
+## Vector addition using CUDA
 
-The following CUDA commands are non-blocking the host:
+```c
+#include <iostream>
+#include <stdio.h>
+#include <stdlib.h>
+using namespace std;
 
-- Kernel launch
-- Memory copy from/to the same device
-- Memory copy/set with Async suffix (as cudaMemcpyAsync,
-  cudaMemsetAsync, cudaMemcpyFromSymbolAsync, …) if
-  the host memory is pinned (page locked)
+int *a, *b;  // host data
+int *c, *c2; // results
 
---- -->
+__global__ void vecAdd(int *A, int *B, int *C, int N) {
+  int i = blockIdx.x * blockDim.x + threadIdx.x;
+  C[i] = A[i] + B[i];
+}
+
+void vecAdd_h(int *A1, int *B1, int *C1, int N) {
+  for (int i = 0; i < N; i++)
+    C1[i] = A1[i] * B1[i];
+}
+
+int main(int argc, char **argv) {
+  printf("Begin \n");
+
+  int n = 10000000;
+  int nBytes = n * sizeof(int);
+  int block_size, block_no;
+
+  a = (int *)malloc(nBytes);
+  b = (int *)malloc(nBytes);
+  c = (int *)malloc(nBytes);
+  c2 = (int *)malloc(nBytes);
+
+  int *a_d, *b_d, *c_d;
+  block_size = 4000;
+  block_no = n / block_size;
+
+  dim3 dimBlock(block_size, 1, 1);
+  dim3 dimGrid(block_no, 1, 1);
+
+  for (int i = 0; i < n; i++)
+    a[i] = i, b[i] = i;
+
+  printf("Allocating device memory on host..\n");
+
+  cudaMalloc((void **)&a_d, n * sizeof(int));
+  cudaMalloc((void **)&b_d, n * sizeof(int));
+  cudaMalloc((void **)&c_d, n * sizeof(int));
+
+  printf("Copying to device..\n");
+
+  cudaMemcpy(a_d, a, n * sizeof(int), cudaMemcpyHostToDevice);
+  cudaMemcpy(b_d, b, n * sizeof(int), cudaMemcpyHostToDevice);
+
+  clock_t start_d = clock();
+  printf("Doing GPU Vector add\n");
+  printf("Block no: %d. Block size: %d\n", block_no, block_size);
+
+  vecAdd<<<block_no, block_size>>>(a_d, b_d, c_d, n);
+  cudaDeviceSynchronize();
+  clock_t end_d = clock();
+
+  clock_t start_h = clock();
+  printf("Doing CPU Vector add\n");
+  vecAdd_h(a, b, c2, n);
+  clock_t end_h = clock();
+
+  double time_d = (double)(end_d - start_d) / CLOCKS_PER_SEC;
+  double time_h = (double)(end_h - start_h) / CLOCKS_PER_SEC;
+
+  cudaMemcpy(c, c_d, n * sizeof(int), cudaMemcpyDeviceToHost);
+  printf("%d %f %f\n", n, time_d, time_h);
+
+  cudaFree(a_d);
+  cudaFree(b_d);
+  cudaFree(c_d);
+
+  return 0;
+}
+```
+
+# Distributed and Cluster computing
+
+## Distributed
+
+Refers to splitting a business into different sub-services and distributing them on different machines.
+
+The commonly used distribution is to add a bunch of web servers after the load balancing server, and then build a cache server on it to save the temporary state, and then share a database.
+
+The only real distribution in this environment is the web server, and there is no connection between the web servers, so the structure and implementation are very simple.
+
+## Cluster
+
+It means that multiple servers are grouped together to achieve the same business and can be regarded as one computer.
+
+A group of computers consisting of multiple servers, as a whole, provides users with a set of network resources, which are the nodes of the cluster.
+
+#### NOTE: What is the difference between Cluster and Grid computing ?
+
+### Scalability
+
+A service node in a cluster that dynamically adds machines to increase the processing power of the cluster.
+
+### High availability
+
+If a node in a cluster fails, the services running on this node can be taken over by other service nodes, thus enhancing the high availability of the cluster.
+
+## Cluster classification
+
+1. High Availability Cluster
+   High-availability cluster, common two-node dual-system hot standby, multi-node HA cluster.
+2. Load Balance Cluster
+   Commonly used Nginx distributes requests to different web servers on the back end, and there is a database cluster. Load balancing is to ensure high availability and high concurrency of the server.
+3. Scientific Computing Cluster (High Performance Computing Cluster)
+   Referred to as HPC cluster. This type of cluster is dedicated to providing powerful computing power that a single computer cannot provide.
+
+## Abilities
+
+### Load balancing
+
+Load balancing can distribute tasks to computing and network resources in a clustered environment.
+
+### Cluster Fault Tolerance
+
+When a cluster environment is used in our system, cluster fault tolerance plays a key role when cluster calls fail for various reasons.
+
+## Type
+
+- Failover Cluster
+  Failed to automatically switch, when there is a failure, retry other servers, usually for read operations, but retry will bring longer delays.
+- Failfast Cluster
+  Fast failure, only one call is initiated, failure is reported immediately, usually used for non-idempotent write operations, such as adding records.
+- Failback Cluster
+  Automatic failure recovery, background record failure request, scheduled retransmission, usually used for message notification operations.
+- Forking Cluster
+  Calling multiple servers in parallel, as long as one returns, is usually used for read operations with higher real-time requirements, but more service resources are wasted.
+
+## Docker basics
 
 #### References
 
